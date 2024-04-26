@@ -14,25 +14,16 @@ export interface CommonProps {
   [x: string]: any
 }
 
-export const SelfClosedElement = (
-  el: string,
-  { id, class: className, data, ...rest }: CommonProps,
-) => HTML`
-  <${el} ${
+export const SelfClosedElement = (el: string, { data, ...rest }: CommonProps) =>
+  HTML`<${el} ${
     data
       ? Object.entries(data)
           .map(([key, value]) => HTML`data-${key}="${value}"`)
           .join(' ')
       : ''
-  } ${
-    rest
-      ? Object.entries(rest)
-          .map(([key, value]) => HTML`${key}="${value}"`)
-          .join(' ')
-      : ''
-  }
-/>
-`
+  } ${Object.entries(rest)
+    .map(([key, value]) => HTML`${key}="${value}"`)
+    .join(' ')}/>`.trim()
 
 /**
  * Generic way to create an HTML element with
@@ -42,23 +33,18 @@ export const Element = (
   el: string,
   { data, ...rest }: CommonProps,
   children?: string,
-) => HTML`
-  <${el} ${
+) =>
+  HTML`<${el} ${
     data
       ? Object.entries(data)
           .map(([key, value]) => HTML`data-${key}="${value}"`)
           .join(' ')
       : ''
-  } ${
-    rest
-      ? Object.entries(rest)
-          .map(([key, value]) => HTML`${key}="${value}"`)
-          .join(' ')
-      : ''
-  }>
-    ${children || ''}
-  </${el}>
-`
+  } ${Object.entries(rest)
+    .map(([key, value]) => HTML`${key}="${value}"`)
+    .join(' ')}>
+  ${children || ''}
+</${el}>`.trim()
 
 export const Fragment = (...children: string[]) => children.join('\n')
 

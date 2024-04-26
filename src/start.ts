@@ -2,7 +2,7 @@ import getenv from 'getenv'
 
 import Log from '@app/shared/log'
 import Server, { Route } from '@app/server'
-import { Components } from '@app/view/components'
+import { Components, Fragment } from '@app/view/components'
 
 const routes = [
   Route.GET({
@@ -28,11 +28,19 @@ const routes = [
           {
             id: 'main',
           },
-          Components.H1(
-            {
-              class: 'is-size-1',
-            },
-            'Hello, world',
+          Fragment(
+            Components.H1(
+              {
+                class: 'is-size-1',
+              },
+              'Hello, world',
+            ),
+            Components.Button(
+              {
+                class: 'button',
+              },
+              'Click Me',
+            ),
           ),
         ),
         meta,
