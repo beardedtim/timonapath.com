@@ -1,0 +1,9 @@
+services:
+  datastore:
+    image: postgres
+    ports:
+      - "9999:5432"
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: ou812
+      POSTGRES_DB: timonapath
