@@ -62,7 +62,7 @@ const ThoughtsListItem = ({
                 href: `/thoughts/${_id}`,
                 class: 'button is-link',
               },
-              'Read more',
+              'Read the full thought',
             ),
           ),
         ),

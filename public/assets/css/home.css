@@ -1,0 +1,5 @@
+.hero-link:hover,
+.hero-link:active,
+.hero-link:focus {
+    color: hsl(0, 0%, 96%) !important;
+}

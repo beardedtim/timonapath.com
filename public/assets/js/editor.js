@@ -44,9 +44,46 @@ const configureEditor = () => {
 }
 
 const configureFormSubmitHandler = () => {
-  const form = document.getElementById('create-form')
+  const createForm = document.getElementById('create-form')
+  const editForm = document.getElementById('edit-form')
 
-  form.addEventListener('submit', async (e) => {
+  editForm.addEventListener('submit', async (e) => {
+    e.preventDefault()
+
+    const formData = new FormData(e.target)
+
+    const title = formData.get('title')
+    const description = formData.get('description')
+    const published = formData.get('published') === 'on'
+    const body = tinymce.get('editor').getContent()
+
+    const dto = {
+      title,
+      description,
+      body,
+      published,
+    }
+
+    const data = await fetch(`/api/thoughts/${editForm.dataset.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dto),
+    })
+      .then((x) => x.json())
+      .then(({ data, error }) => {
+        if (error) {
+          throw error
+        }
+
+        return data
+      })
+
+    window.location.href = `/thoughts/${data._id}`
+  })
+
+  createForm.addEventListener('submit', async (e) => {
     e.preventDefault()
 
     const formData = new FormData(e.target)

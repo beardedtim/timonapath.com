@@ -9,18 +9,33 @@ import type { Server as HTTPServerInstance } from 'http'
 import type { Route } from './route'
 import MainLayout from '@app/view/layouts/main'
 
+export type PageLayout = (props: LayoutProps) => string
+
 export interface LinkRequest {
   src: string
   crossorigin?: string
   referrerpolicy?: string
 }
 
-export type ServerState = Koa.DefaultState & {}
+export type ServerState = Koa.DefaultState & {
+  layout: PageLayout
+}
+
+interface LayoutProps {
+  meta: {
+    title: string
+  }
+  styles: string[]
+  headLinks: LinkRequest[]
+  footLinks: LinkRequest[]
+  body: string
+}
 
 interface ServerViewContext {
   registerHeadScript(link: LinkRequest): ServerContext
   registerFootScript(link: LinkRequest): ServerContext
   registerStyle(link: string): ServerContext
+  setLayout(layout: PageLayout): ServerContext
   render(body: string, meta: { title: string; [x: string]: any }): void
 }
 
@@ -46,6 +61,8 @@ class Server {
         style: new Set<string>(),
       }
 
+      ctx.state.layout = MainLayout
+
       return next()
     })
 
@@ -70,6 +87,12 @@ class Server {
       return this
     }
 
+    this.#app.context.setLayout = function (newLayout: PageLayout) {
+      this.state.layout = newLayout
+
+      return this
+    }
+
     /**
      * Render gets given a string and some metadata
      * and will render the given string as the body
@@ -89,13 +112,17 @@ class Server {
       const headLinks = [...this.state.links.head.values()]
       const footLinks = [...this.state.links.foot.values()]
 
-      this.body = MainLayout({
+      const layoutProps = {
         meta,
         styles,
         footLinks,
         headLinks,
         body: str,
-      })
+      }
+
+      const layout = this.state.layout ?? MainLayout
+
+      this.body = layout(layoutProps)
     }
 
     return this

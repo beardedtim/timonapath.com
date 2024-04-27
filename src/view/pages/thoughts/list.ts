@@ -3,23 +3,21 @@ import { Components, Fragment } from '@app/view/utils'
 import WebsiteHeader from '@app/view/components/shared/website-header'
 import WebsiteFooter from '@app/view/components/shared/website-footer'
 import ThoughtsList from '@app/view/components/thoughts/list'
-import type { Thought } from '@app/domains/thoughts'
+import { Thought } from '@app/domains/thoughts'
 
-interface HomePageProps {
-  recentThoughts: Thought[]
+interface ThoughtsPageProps {
+  thoughts: Thought[]
 }
 
-const HomePage = ({ recentThoughts }: HomePageProps) =>
+const Thoughts = ({ thoughts }: ThoughtsPageProps) =>
   Fragment(
-    WebsiteHeader({
-      title: 'Tim on a Path',
-    }),
+    WebsiteHeader({ title: 'Thoughts | Tim on a Path' }),
     Components.Main(
       {},
       Fragment(
         Components.Section(
           {
-            class: 'hero is-medium is-link',
+            class: 'hero is-medium is-info',
           },
           Components.Div(
             {
@@ -30,13 +28,13 @@ const HomePage = ({ recentThoughts }: HomePageProps) =>
                 {
                   class: 'title',
                 },
-                'We all are on a path to somewhere',
+                'Recent Thoughts',
               ),
               Components.H3(
                 {
                   class: 'subtitle',
                 },
-                'Here are my thoughts about what that path is like',
+                'What do you think about all this?',
               ),
             ),
           ),
@@ -46,14 +44,8 @@ const HomePage = ({ recentThoughts }: HomePageProps) =>
             class: 'section',
           },
           Fragment(
-            Components.H3(
-              {
-                class: 'title',
-              },
-              'Recent Thoughts',
-            ),
             ThoughtsList({
-              thoughts: recentThoughts,
+              thoughts: thoughts,
             }),
           ),
         ),
@@ -62,4 +54,4 @@ const HomePage = ({ recentThoughts }: HomePageProps) =>
     WebsiteFooter(),
   )
 
-export default HomePage
+export default Thoughts

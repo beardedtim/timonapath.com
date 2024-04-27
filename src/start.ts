@@ -20,14 +20,47 @@ const routes = [
   }),
   Route.GET({
     path: '/',
-    handlers: (ctx) => {
+    handlers: async (ctx) => {
       ctx.registerStyle('/assets/css/home.css')
+      const recentThoughts = await Thoughts.getRecentThoughts({ limit: 5 })
 
       const meta = {
         title: 'Tim on a Path',
+        description:
+          'We are all on a path somewhere. This is where Tim writes their thoughts about the path they are on.',
       }
 
-      ctx.render(Pages.HomePage(), meta)
+      ctx.render(Pages.HomePage({ recentThoughts }), meta)
+    },
+  }),
+  Route.GET({
+    path: '/thoughts',
+    handlers: async (ctx) => {
+      ctx.registerStyle('/assets/css/home.css')
+      const thoughts = await Thoughts.getRecentThoughts({ limit: 10 })
+
+      const meta = {
+        title: 'Thoughts | Tim on a Path',
+        description:
+          'These are the most recent Thoughts that I have written about.',
+      }
+
+      ctx.render(Pages.Thoughts({ thoughts }), meta)
+    },
+  }),
+  Route.GET({
+    path: '/thoughts/:id',
+    handlers: async (ctx) => {
+      ctx.registerStyle('/assets/css/home.css')
+
+      const thought = await Thoughts.getById(ctx.params.id)
+
+      const meta = {
+        title: `${thought.title} | Tim on a Path`,
+        description: thought.description ?? 'Another thought about the path',
+      }
+
+      ctx.render(Pages.Thought({ thought }), meta)
     },
   }),
   Route.GET({
@@ -49,6 +82,36 @@ const routes = [
         })
         .render(Pages.CreateThought(), {
           title: 'Create | Tim on a Path',
+        })
+    },
+  }),
+  Route.GET({
+    path: '/admin/thoughts/:id/edit',
+    handlers: async (ctx) => {
+      const thought = await Thoughts.getById(ctx.params.id)
+
+      if (!thought) {
+        ctx.status = 404
+        ctx.body = 'Not Found'
+        return
+      }
+
+      ctx
+        .registerHeadScript({
+          src: 'https://cdn.tiny.cloud/1/9gwptj7qlzokszivkumi1duezsyjy0wp3c3u5zb772libeo7/tinymce/7/tinymce.min.js',
+          referrerpolicy: 'origin',
+        })
+        .registerHeadScript({
+          src: 'https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/bulma-quickview/dist/js/bulma-quickview.min.js',
+        })
+        .registerStyle(
+          'https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/css/bulma-extensions.min.css',
+        )
+        .registerFootScript({
+          src: '/assets/js/editor.js',
+        })
+        .render(Pages.EditThought({ thought }), {
+          title: `Edit ${thought.title} | Tim on a Path`,
         })
     },
   }),

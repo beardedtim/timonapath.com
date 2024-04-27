@@ -1,2 +1,5 @@
 export { default as HomePage } from './pages/home'
 export { default as CreateThought } from './pages/admin/create-thought'
+export { default as Thoughts } from './pages/thoughts/list'
+export { default as Thought } from './pages/thoughts/single'
+export { default as EditThought } from './pages/admin/edit-thought'

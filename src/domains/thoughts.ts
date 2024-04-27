@@ -23,6 +23,35 @@ export const CreateThoughtSchema = z.object({
 
 export type CreateThoughtDTO = z.infer<typeof CreateThoughtSchema>
 
+export const mapDBToDTO = ({
+  _id,
+  title,
+  description,
+  created_at,
+  last_updated,
+  published,
+  published_at,
+  body,
+}: {
+  _id: string
+  title: string
+  description?: string
+  created_at: string
+  last_updated: string
+  published: boolean
+  published_at: string
+  body: string
+}): Thought => ({
+  _id,
+  title,
+  description,
+  created_at,
+  last_updated,
+  published,
+  published_at,
+  body,
+})
+
 export const createThought = (thought: CreateThoughtDTO) =>
   query(
     `
@@ -48,7 +77,9 @@ export const getById = (id: string) =>
     LIMIT 1
 `,
     [id],
-  ).then(({ rows }) => rows[0] as Thought)
+  )
+    .then(({ rows }) => rows[0])
+    .then(mapDBToDTO)
 
 const makeUpdateQuery = (update: string[]): string =>
   update.reduce(
@@ -70,8 +101,22 @@ export const updateThoughtById = (id: string, update: Partial<Thought>) => {
     RETURNING
       *
   `
-  console.log(sql, 'sql')
+
   const args = keys.map((key) => update[key])
 
-  return query(sql, [...args, id]).then(({ rows }) => rows[0])
+  return query(sql, [...args, id])
+    .then(({ rows }) => rows[0])
+    .then(mapDBToDTO)
 }
+
+export const getRecentThoughts = ({ limit }: { limit?: number }) =>
+  query(`
+  SELECT
+    *
+  FROM
+    thoughts
+  WHERE
+    published IS TRUE
+  ORDER BY published_at DESC
+  LIMIT ${limit}
+`).then(({ rows }) => rows.map(mapDBToDTO))

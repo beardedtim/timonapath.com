@@ -1,6 +1,6 @@
 import { LinkRequest } from '@app/server'
 
-const MainLayout = ({
+const SinlgThoughtLayout = ({
   meta,
   styles,
   headLinks,
@@ -9,7 +9,6 @@ const MainLayout = ({
 }: {
   meta: {
     title: string
-    description?: string
   }
   styles: string[]
   headLinks: LinkRequest[]
@@ -23,11 +22,6 @@ const MainLayout = ({
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${meta.title}</title>
-    ${
-      meta.description
-        ? `<meta name="description" content="${meta.description}" >`
-        : ''
-    }
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
@@ -42,7 +36,7 @@ const MainLayout = ({
       )
       .join('\n')}
 </head>
-<body class="has-navbar-fixed-top">
+<body>
     ${body}
 </body>
 </html>
@@ -56,4 +50,4 @@ const MainLayout = ({
       .join('\n')}
       `.trim()
 
-export default MainLayout
+export default SinlgThoughtLayout
