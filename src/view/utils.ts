@@ -66,9 +66,14 @@ const elements = [
   'Article',
   'Aside',
   'Button',
+  'Main',
+  'Header',
+  'Footer',
+  'Nav',
+  'Time',
 ] as const
 
-const selfClosedElements = ['Img'] as const
+const selfClosedElements = ['Img', 'Hr', 'Br'] as const
 
 export const Components: {
   [K in (typeof elements)[number] | (typeof selfClosedElements)[number]]: (

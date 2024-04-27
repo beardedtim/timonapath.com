@@ -2,7 +2,7 @@ import getenv from 'getenv'
 
 import Log from '@app/shared/log'
 import Server, { Route } from '@app/server'
-import { Components, Fragment } from '@app/view/components'
+import * as Pages from '@app/view/pages'
 
 const routes = [
   Route.GET({
@@ -19,38 +19,20 @@ const routes = [
   Route.GET({
     path: '/',
     handlers: (ctx) => {
+      ctx.registerStyle('/assets/css/home.css')
+
       const meta = {
         title: 'Tim on a Path',
       }
 
-      ctx.render(
-        Components.Div(
-          {
-            id: 'main',
-          },
-          Fragment(
-            Components.H1(
-              {
-                class: 'is-size-1',
-              },
-              'Hello, world',
-            ),
-            Components.Button(
-              {
-                class: 'button',
-              },
-              'Click Me',
-            ),
-          ),
-        ),
-        meta,
-      )
+      ctx.render(Pages.HomePage(), meta)
     },
   }),
 ]
 
 const main = async () => {
   Log.trace('Starting system')
+
   const server = new Server()
 
   server

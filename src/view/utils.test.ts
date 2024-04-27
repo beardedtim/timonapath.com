@@ -1,4 +1,4 @@
-import { Fragment, HTML, SelfClosedElement, Element } from './components'
+import { Fragment, HTML, SelfClosedElement, Element } from './utils'
 
 describe('Fragment', () => {
   describe('When given no children', () => {

@@ -7,9 +7,26 @@ import * as ServerMiddleware from './middleware'
 export * as Route from './route'
 import type { Server as HTTPServerInstance } from 'http'
 import type { Route } from './route'
+import MainLayout from '@app/view/layouts/main'
+
+interface LinkRequest {
+  src: string
+  crossorigin?: string
+}
+
+export type ServerState = Koa.DefaultState & {}
+
+interface ServerViewContext {
+  registerHeadScript(link: LinkRequest): void
+  registerFootScript(link: LinkRequest): void
+  registerStyle(link: string): void
+  render(body: string, meta: { title: string; [x: string]: any }): void
+}
+
+export type ServerContext = Koa.DefaultContext & ServerViewContext
 
 class Server {
-  #app: Koa
+  #app: Koa<ServerState, ServerContext>
   #router: Router
   #instance?: HTTPServerInstance
 
@@ -32,17 +49,11 @@ class Server {
     // using `function()` instead of `() => ` in order to get the
     // correct "this" value inside of it. We want `this` to be the
     // `ctx` value inside of the middleware/handler function
-    this.#app.context.registerHeadScript = function (link: {
-      src: string
-      crossorigin?: string
-    }) {
+    this.#app.context.registerHeadScript = function (link: LinkRequest) {
       this.state.links.head.add(link)
     }
 
-    this.#app.context.registerFootScript = function (link: {
-      src: string
-      crossorigin?: string
-    }) {
+    this.#app.context.registerFootScript = function (link: LinkRequest) {
       this.state.links.foot.add(link)
     }
 
@@ -68,41 +79,14 @@ class Server {
       const styles = [...this.state.links.style.values()]
       const headLinks = [...this.state.links.head.values()]
       const footLinks = [...this.state.links.foot.values()]
-      console.log(styles, headLinks, footLinks)
-      this.body = `
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${meta.title}</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
-    <link rel="manifest" href="/assets/images/site.webmanifest">
-    ${styles.map((href) => `<link rel="stylesheet" href="${href}" />`).join('\n')}
-    ${headLinks
-      .map(
-        ({ src, crossorigin }) =>
-          `<script src="${src}" ${
-            crossorigin ? `crossorigin="${crossorigin}"` : ''
-          }></script>`,
-      )
-      .join('\n')}
-</head>
-<body>
-    ${str}
-</body>
-</html>
-    ${footLinks
-      .map(
-        ({ src, crossorigin }) =>
-          `<script src="${src}" ${
-            crossorigin ? `crossorigin="${crossorigin}"` : ''
-          }></script>`,
-      )
-      .join('\n')}
-      `.trim()
+
+      this.body = MainLayout({
+        meta,
+        styles,
+        footLinks,
+        headLinks,
+        body: str,
+      })
     }
 
     return this

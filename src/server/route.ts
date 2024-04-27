@@ -1,5 +1,5 @@
 import type { Middleware } from 'koa'
-
+import type { ServerContext, ServerState } from './'
 /**
  * We only allow a certain subset of the
  * available HTTP methods
@@ -13,6 +13,8 @@ export type AllowedMethod =
   | 'options'
   | 'head'
 
+type Handler = Middleware<ServerState, ServerContext>
+
 /**
  * A Route is a way to map an HTTP method
  * and some path to the execution of 1 or more
@@ -21,7 +23,7 @@ export type AllowedMethod =
 export interface Route {
   method: AllowedMethod
   path: string
-  handlers: Middleware[]
+  handlers: Handler[]
 }
 
 /**
@@ -32,7 +34,7 @@ export const GET = ({
   handlers,
 }: {
   path: string
-  handlers: Middleware | Middleware[]
+  handlers: Handler | Handler[]
 }): Route => ({
   method: 'get',
   path,
@@ -47,7 +49,7 @@ export const POST = ({
   handlers,
 }: {
   path: string
-  handlers: Middleware | Middleware[]
+  handlers: Handler | Handler[]
 }): Route => ({
   method: 'post',
   path,
@@ -62,7 +64,7 @@ export const PATCH = ({
   handlers,
 }: {
   path: string
-  handlers: Middleware | Middleware[]
+  handlers: Handler | Handler[]
 }): Route => ({
   method: 'patch',
   path,
@@ -77,7 +79,7 @@ export const PUT = ({
   handlers,
 }: {
   path: string
-  handlers: Middleware | Middleware[]
+  handlers: Handler | Handler[]
 }): Route => ({
   method: 'put',
   path,
@@ -92,7 +94,7 @@ export const DELETE = ({
   handlers,
 }: {
   path: string
-  handlers: Middleware | Middleware[]
+  handlers: Handler | Handler[]
 }): Route => ({
   method: 'delete',
   path,
@@ -107,7 +109,7 @@ export const OPTIONS = ({
   handlers,
 }: {
   path: string
-  handlers: Middleware | Middleware[]
+  handlers: Handler | Handler[]
 }): Route => ({
   method: 'options',
   path,
@@ -122,7 +124,7 @@ export const HEAD = ({
   handlers,
 }: {
   path: string
-  handlers: Middleware | Middleware[]
+  handlers: Handler | Handler[]
 }): Route => ({
   method: 'head',
   path,

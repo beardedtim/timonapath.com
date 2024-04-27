@@ -13,4 +13,15 @@ html {
 body {
     width: 100%;
     min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+body > header,
+body > footer {
+    flex-grow:  0;
+}
+
+body > main {
+    flex-grow: 1;
 }
