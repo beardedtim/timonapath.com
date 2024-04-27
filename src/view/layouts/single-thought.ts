@@ -1,6 +1,6 @@
 import { LinkRequest } from '@app/server'
 
-const SinlgThoughtLayout = ({
+const SingleThoughtLayout = ({
   meta,
   styles,
   headLinks,
@@ -50,4 +50,4 @@ const SinlgThoughtLayout = ({
       .join('\n')}
       `.trim()
 
-export default SinlgThoughtLayout
+export default SingleThoughtLayout

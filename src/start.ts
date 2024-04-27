@@ -5,6 +5,7 @@ import Server, { Route } from '@app/server'
 import * as Pages from '@app/view/pages'
 
 import * as Thoughts from '@app/domains/thoughts'
+import SingleThoughtLayout from './view/layouts/single-thought'
 
 const routes = [
   Route.GET({
@@ -51,7 +52,7 @@ const routes = [
   Route.GET({
     path: '/thoughts/:id',
     handlers: async (ctx) => {
-      ctx.registerStyle('/assets/css/home.css')
+      ctx.registerStyle('/assets/css/home.css').setLayout(SingleThoughtLayout)
 
       const thought = await Thoughts.getById(ctx.params.id)
 

@@ -6,6 +6,7 @@ interface ThoughtsListItemProps {
   title: string
   description?: string
   published_at: string
+  last_updated: string
 }
 
 const ThoughtsListItem = ({
@@ -13,6 +14,7 @@ const ThoughtsListItem = ({
   title,
   description,
   published_at,
+  last_updated,
 }: ThoughtsListItemProps) =>
   Components.Article(
     {
@@ -39,19 +41,42 @@ const ThoughtsListItem = ({
             'is-flex is-align-items-center is-justify-content-space-between',
         },
         Fragment(
-          Components.P(
+          Components.Div(
             {
-              class: '',
+              class: 'is-flex',
             },
             Fragment(
-              'Posted ',
-              Components.Time(
+              Components.P(
                 {
-                  datetime: published_at,
+                  class: 'mr-4 is-size-7',
                 },
-                formatDistanceToNow(published_at, {
-                  addSuffix: true,
-                }),
+                Fragment(
+                  'Posted ',
+                  Components.Time(
+                    {
+                      datetime: published_at,
+                    },
+                    formatDistanceToNow(published_at, {
+                      addSuffix: true,
+                    }),
+                  ),
+                ),
+              ),
+              Components.P(
+                {
+                  class: 'is-size-7',
+                },
+                Fragment(
+                  'Last Updated ',
+                  Components.Time(
+                    {
+                      datetime: last_updated,
+                    },
+                    formatDistanceToNow(last_updated, {
+                      addSuffix: true,
+                    }),
+                  ),
+                ),
               ),
             ),
           ),
