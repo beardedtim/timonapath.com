@@ -52,7 +52,7 @@ export const adminRoutes = [
           src: '/assets/js/editor.js',
         })
         .render(Pages.EditThought({ thought }), {
-          title: `Edit ${thought.title} | Tim on a Path`,
+          title: `Edit Thought | Tim on a Path`,
         })
     },
   }),

@@ -10,7 +10,7 @@ interface EditThoughtProps {
 const EditThought = ({ thought }: EditThoughtProps) =>
   Fragment(
     WebsiteHeader({
-      title: `Edit ${thought.title} | Admin`,
+      title: `Edit Thought`,
     }),
     Components.Main(
       {
