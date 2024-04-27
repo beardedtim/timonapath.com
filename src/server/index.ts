@@ -9,17 +9,18 @@ import type { Server as HTTPServerInstance } from 'http'
 import type { Route } from './route'
 import MainLayout from '@app/view/layouts/main'
 
-interface LinkRequest {
+export interface LinkRequest {
   src: string
   crossorigin?: string
+  referrerpolicy?: string
 }
 
 export type ServerState = Koa.DefaultState & {}
 
 interface ServerViewContext {
-  registerHeadScript(link: LinkRequest): void
-  registerFootScript(link: LinkRequest): void
-  registerStyle(link: string): void
+  registerHeadScript(link: LinkRequest): ServerContext
+  registerFootScript(link: LinkRequest): ServerContext
+  registerStyle(link: string): ServerContext
   render(body: string, meta: { title: string; [x: string]: any }): void
 }
 
@@ -35,12 +36,14 @@ class Server {
     this.#router = new Router()
   }
 
+  // Must be added before any middleware that
+  // depends on this, such as GlobalAssets
   withViewContext() {
     this.#app.use((ctx, next) => {
       ctx.state.links = {
-        head: new Set(),
-        foot: new Set(),
-        style: new Set(),
+        head: new Set<LinkRequest>(),
+        foot: new Set<LinkRequest>(),
+        style: new Set<string>(),
       }
 
       return next()
@@ -51,14 +54,20 @@ class Server {
     // `ctx` value inside of the middleware/handler function
     this.#app.context.registerHeadScript = function (link: LinkRequest) {
       this.state.links.head.add(link)
+
+      return this
     }
 
     this.#app.context.registerFootScript = function (link: LinkRequest) {
       this.state.links.foot.add(link)
+
+      return this
     }
 
     this.#app.context.registerStyle = function (link: string) {
       this.state.links.style.add(link)
+
+      return this
     }
 
     /**
@@ -103,7 +112,7 @@ class Server {
       ServerMiddleware.ErrorHandling(),
       ServerMiddleware.BodyParser(),
       ServerMiddleware.CORS(),
-      ServerMiddleware.SecurityHeaders(),
+      // ServerMiddleware.SecurityHeaders(),
       ServerMiddleware.Static(CONSTS.PUBLIC_DIR),
       ServerMiddleware.GlobalAssets(),
     )

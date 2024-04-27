@@ -1,3 +1,5 @@
+import { LinkRequest } from '@app/server'
+
 const MainLayout = ({
   meta,
   styles,
@@ -9,8 +11,8 @@ const MainLayout = ({
     title: string
   }
   styles: string[]
-  headLinks: any[]
-  footLinks: any[]
+  headLinks: LinkRequest[]
+  footLinks: LinkRequest[]
   body: string
 }) =>
   `
@@ -27,10 +29,10 @@ const MainLayout = ({
     ${styles.map((href) => `<link rel="stylesheet" href="${href}" />`).join('\n')}
     ${headLinks
       .map(
-        ({ src, crossorigin }) =>
+        ({ src, crossorigin, referrerpolicy }) =>
           `<script src="${src}" ${
             crossorigin ? `crossorigin="${crossorigin}"` : ''
-          }></script>`,
+          } ${referrerpolicy ? `referrerpolicy="${referrerpolicy}"` : ''}></script>`,
       )
       .join('\n')}
 </head>
@@ -40,10 +42,10 @@ const MainLayout = ({
 </html>
     ${footLinks
       .map(
-        ({ src, crossorigin }) =>
+        ({ src, crossorigin, referrerpolicy }) =>
           `<script src="${src}" ${
             crossorigin ? `crossorigin="${crossorigin}"` : ''
-          }></script>`,
+          } ${referrerpolicy ? `referrerpolicy="${referrerpolicy}"` : ''}></script>`,
       )
       .join('\n')}
       `.trim()
