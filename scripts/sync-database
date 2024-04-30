@@ -1,0 +1,26 @@
+#!/bin/sh
+
+DIR_TO_DUMP="./artifacts/sync"
+
+#
+# -it : run this container interactivelly so we can input the password
+# --rm: remove this container after running
+# -v: mount my path above to the /tmp/dump directory in the container
+#
+#
+#  -s: schema only
+#  -v: verbose output
+#  -h: host relative to container
+#  -p: port relative to container
+#  -U: username
+#  -f: output path relative to the container
+#
+docker run -it  --rm --network=host -v "$DIR_TO_DUMP:/tmp/dump" \
+  postgres pg_dump \
+    -s \
+    -v \
+    -h 0.0.0.0 \
+    -p 9999 \
+    -U username \
+    timonapath \
+    -f "/tmp/dump/latest.dump"
